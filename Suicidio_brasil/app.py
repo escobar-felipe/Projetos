@@ -107,15 +107,15 @@ def make_text(rows, # number of rows
         
     plt.suptitle(sup_title, fontsize = font_suptitle) #by:ghermsen
 #============================ geojson =============================================
-geojson = json.load(open('brasil_estados.json'))
+geojson = json.load(open('csv/brasil_estados.json'))
 
 #=================================== code ============================================
 
 
-df = pd.read_csv("suicidios_2010_a_2019.csv")
+df = pd.read_csv("csv/suicidios_2010_a_2019.csv")
 #df_pip = pd.read_csv("pibbrasil.csv")
-df_censo=pd.read_csv('IBGE2010.csv')
-df_pop = pd.read_csv('popbrasil.csv')
+df_censo=pd.read_csv('csv/IBGE2010.csv')
+df_pop = pd.read_csv('csv/popbrasil.csv')
 
 df.drop('Unnamed: 0', axis=1, inplace=True) #retirando coluna unnmamed
 
@@ -247,6 +247,7 @@ def SetAmarelo():
 def dashboard():
     with st.container():
         st.title("Dashboard")
+
 #====================================== crescimento =============================================#
     fig = px.line(df_data, 
               x=df_data['ano_mes'], 
@@ -331,15 +332,34 @@ def dashboard():
                     borderwidth=2,
                     borderpad=4,
                     bgcolor="grey")
-
+                
 
     #============================================================================================#
     with st.container():
         st.plotly_chart(fig)
+        with st.expander("Série Histórica dos suicídios"):
+            st.write("""
+         Houve um aumento de 43.03% no número de suicídio no ano de 2019 em relação ao ano de 2010, 
+         indo de 9476 no ano de 2010 a 13554 no ano de 2019. Para lidar com o aumento populacional 
+         — uma das possibilidades do aumento no número de suicídios — 
+         foi calculado a taxa de suicídio por 100 mil Habitantes 
+         (Número de suicídios divido pela População do Brasil multiplicado por 100 mil) no período entre 2010 e 2019 ,
+          assim foi possível verificar que o número vítimas vem crescendo independente do aumento populacional.
+     """)
         st.plotly_chart(taxa)
+        with st.expander("Taxa de suicídio"):
+            st.write("""
+   Existem diversos outros fatores que podem estar ocasionando esse aumento , não podemos afirmar as causas do aumento sem realizar testes de casualidade. Deixo dois principais problemas da atualidade que precisam ser estudados que podem estar ocasionando esse aumento.
+    1 - A fragilidade social, famílias ou pessoas que estão perdendo sua representatividade na sociedade principalmente por questões socioeconômicas.
+    2 - Problemas financeiros, de acordo com a pesquisa THE EMPLOYER’S GUIDE TO FINANCIAL WELLNESS, pessoas com dificuldades financeiras são 4x mais propensas a desenvolver a depressão.
+     """)
     #=====================================================================================#
     st.subheader("Selecione o ano:")
     ano = st.slider('', 2010, 2019, 2010) #slider
+    option = st.selectbox(
+     'Escolha um gráfico:',
+     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil'))
+
     #====================================== bonecos =============================================#
     data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
             'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
@@ -369,7 +389,8 @@ def dashboard():
       figsize=(15,6)
     )
     fig.set_tight_layout(False)
-    st.pyplot(fig)
+    def vitimas():
+        st.pyplot(fig)
 # ================================================= mapa ===================================+#
     df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
     df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
@@ -388,8 +409,8 @@ def dashboard():
                 'yanchor': 'top'},
                 title_font_family="monospace",
                 title_font_size=21)
-
-    st.plotly_chart(mapa)
+    def mapa_suicide():
+        st.plotly_chart(mapa)
 #===================================  racacor ====================================
 
     racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
@@ -412,7 +433,8 @@ def dashboard():
                   title_font_size=20)
     racacor.update_traces(texttemplate='%{text:.2s}', textposition='inside')
     racacor.update_layout(uniformtext_minsize=40, uniformtext_mode='hide')
-    st.plotly_chart(racacor)
+    def Raçacor():
+        st.plotly_chart(racacor)
 
 #================================== estado civil =========================================
     estciv = px.bar(df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True), x="size",y=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
@@ -434,8 +456,17 @@ def dashboard():
                   'yanchor': 'top'},
                   title_font_family="monospace",
                   title_font_size=20)
-    st.plotly_chart(estciv)
-
+    def estadocivil():
+        st.plotly_chart(estciv)
+#====================================== code ====================================================#
+    if option == 'Porcentagem de vítimas Masculinas e Femininas':
+        vitimas()
+    elif option == "Taxa de Suicídio por 100 mil habitantes dos estados":
+        mapa_suicide()
+    elif option =="Número de suicídio por RAÇA / COR":
+        Raçacor()
+    elif option =="Número de suicídio por estado civil":
+        estadocivil()
 #================================== code ============================================
 
 if options == "Início":
