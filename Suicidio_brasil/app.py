@@ -113,7 +113,6 @@ geojson = json.load(open('csv/brasil_estados.json'))
 
 
 df = pd.read_csv("csv/suicidios_2010_a_2019.csv")
-#df_pip = pd.read_csv("pibbrasil.csv")
 df_censo=pd.read_csv('csv/IBGE2010.csv')
 df_pop = pd.read_csv('csv/popbrasil.csv')
 
@@ -163,11 +162,34 @@ df_raca_ano.columns=['size']
 df['ESTCIV'].fillna('Não Informado', inplace=True)
 df_estciv_ano = pd.DataFrame(df.groupby(['ano','ESTCIV']).agg('size'))
 df_estciv_ano.columns = ['size']
+#================================= faixa etária ============================================
+df_idade = df.dropna(subset = ['DTNASC'])
+df_idade = df[df['ano_nasc'].astype(float).between(1925, 2019)]
+df_idade['idade'] = ((df_idade.DTOBITO - df_idade.DTNASC)/np.timedelta64(1, 'Y')).astype('int')
+bins= [0,10,20,30,40,50,60,70,80,90,110]
+labels = ['0-10','10-20','20-30','30-40','40-50','50-60','60-70','70-80','80-90','90-110']
+df_idade['grupos'] = pd.cut(df_idade['idade'], bins=bins, labels=labels, right=False)
+df_idade_gp_ano = pd.DataFrame(df_idade.groupby(['ano','grupos']).agg('size'))
+df_idade_gp_ano.columns = ['size']
+
+#==================================== Local da ocorrência ==================================
+df['LOCOCOR'].fillna('Não Informado', inplace=True)
+df['LOCOCOR'].replace('Outro estabelecimento de saúde','Departamentos de Saúde', inplace=True)
+df['LOCOCOR'].replace('Hospital','Departamentos de Saúde', inplace=True)
+df_lococor = pd.DataFrame(df.groupby(['ano','LOCOCOR']).agg('size'))
+df_lococor.columns = ['size']
+#=================================== escolaridade ==========================================
+df_esc_ano = pd.DataFrame(df.groupby(['ano', 'ESC']).agg('size'))
+df_esc_ano.columns = ['size']
+df2 = pd.DataFrame({
+    'Escolaridade': ['1 a 3 anos', '4 a 7 anos', '8 a 11 anos', '12 e mais', 'Nenhuma'],
+    'num': [0, 1, 2, 3, 4]})
+
 #==================================== page =================================================
 
 
 st.set_page_config(
-     page_title="FelipeEscobar",
+     page_title="Suicídio Brasil",
      page_icon="chart_with_upwards_trend",
      layout="centered",
      initial_sidebar_state="expanded",
@@ -177,6 +199,7 @@ st.set_page_config(
          'About': "# This is a header. This is an *extremely* cool app!"
      }
  )
+
 
 st.markdown("""
 <style>
@@ -190,8 +213,15 @@ st.markdown("""
 
 st.sidebar.title('Navegation')
 options = st.sidebar.radio('Select a page:', 
-    ['Início', 'Setembro Amarelo' ,'Dashboard'])
-
+    ['Início', 'Setembro Amarelo' , 'Perfil Das Vítimas','Dashboard'])
+header_html = """<img src="avatar.png" style="width:200px;height:200px;">"""
+col1, col2,col3,col4 = st.sidebar.columns(4)
+with col2:
+    st.image("avatar.png" ,width=150)
+st.sidebar.text("""        Felipe Escobar
+Cursando Análise e Desenvolvimento 
+de Sistemas na ULBRA - Universidade
+Luterana do Brasil.""")
 #============ paginas ================#
 
 def home():
@@ -214,41 +244,6 @@ def home():
 * **CAUSABAS:** Causa básica do óbito. Código CID-10.
 * **CAUSABAS_O:** Causa básica do óbito. Código CID-10.""", unsafe_allow_html=False)
 
-    st.dataframe(df.head())
-
-    st.markdown("""### Análise dos dados
-<p class="big-font">&emsp;Serão abordados na análise dos dados os aspectos temporais , territoriais e sociais.</p>
-
-### Temporal e Territorial:<br>
-
-<p class="big-font">
-1. Qual o aumento no número de suicídio com o passar dos anos ?<br>
-2. A taxa de suicídio por 100 mil habitantes aumentou ?<br>
-4. Qual o estado com a maior taxa de suicídio por 100 mil habitantes?<br>
-5. Qual é o local que mais ocorre os suicídios ?<br></p>
-
-### Sociais :<br>
-
-<p class="big-font">
-1. Qual é o gênero principal das vítimas?<br>
-2. Qual é o principal grupo étnico das vítimas?<br>
-3. Qual é o estado civil das vítimas ?<br>
-4. Qual é a principal faixa etária das vítimas?<br>
-5. Qual é a escolaridade das vítimas ?<br>
-6. Quais são as ocupações das vítimas ?<br></p>""", unsafe_allow_html=True)
-
-def SetAmarelo():
-    st.title("Setembro Amarelo")
-    st.markdown("""<p class="big-font">&emsp;O Setembro Amarelo é uma campanha de conscientização sobre a prevenção do suicídio, no dia 10 deste mês é comemorado o Dia Mundial de Prevenção ao Suicídio.<br>&emsp;A ideia da campanha visa conscientizar as pessoas sobre o suicídio, bem como evitar o seu acontecimento.
-     A divulgação é um fator muito importante, o assunto suicídio ainda é um tabu em nossa sociedade, a campanha acredita que falar sobre o mesmo é uma forma de entender quem passa por situações que levem a ideias suicidas, ajudá-las a partir do momento em que as mesmas são identificadas.<br>
-&emsp;Caso esteja tendo esse tipo de pensamento ou passando por um momento de crise, busque ajuda. Os psicólogos são profissionais habilitados para tratar com esse tipo de problema ,assim como o apoio da família e amigos é muito importe nesse momento.<br>
-&emsp;O <a href="https://www.cvv.org.br/">'CVV — Centro de Valorização da Vida'</a> realiza apoio emocional e prevenção do suicídio, atendendo voluntária e gratuitamente todas as pessoas que querem e precisam conversar, sob total sigilo por telefone, e-mail e chat 24 horas todos os dias.’ Informações sobre o atendimento ligue: 188)</p>""", unsafe_allow_html=True)
-
-def dashboard():
-    with st.container():
-        st.title("Dashboard")
-
-#====================================== crescimento =============================================#
     fig = px.line(df_data, 
               x=df_data['ano_mes'], 
               y=df_data['size'],
@@ -353,12 +348,86 @@ def dashboard():
     1 - A fragilidade social, famílias ou pessoas que estão perdendo sua representatividade na sociedade principalmente por questões socioeconômicas.
     2 - Problemas financeiros, de acordo com a pesquisa THE EMPLOYER’S GUIDE TO FINANCIAL WELLNESS, pessoas com dificuldades financeiras são 4x mais propensas a desenvolver a depressão.
      """)
+
+def SetAmarelo():
+    st.title("Setembro Amarelo")
+    st.markdown("""<p class="big-font">&emsp;O Setembro Amarelo é uma campanha de conscientização sobre a prevenção do suicídio, no dia 10 deste mês é comemorado o Dia Mundial de Prevenção ao Suicídio.<br>&emsp;A ideia da campanha visa conscientizar as pessoas sobre o suicídio, bem como evitar o seu acontecimento.
+     A divulgação é um fator muito importante, o assunto suicídio ainda é um tabu em nossa sociedade, a campanha acredita que falar sobre o mesmo é uma forma de entender quem passa por situações que levem a ideias suicidas, ajudá-las a partir do momento em que as mesmas são identificadas.<br>
+&emsp;Caso esteja tendo esse tipo de pensamento ou passando por um momento de crise, busque ajuda. Os psicólogos são profissionais habilitados para tratar com esse tipo de problema ,assim como o apoio da família e amigos é muito importe nesse momento.<br>
+&emsp;O <a href="https://www.cvv.org.br/">'CVV — Centro de Valorização da Vida'</a> realiza apoio emocional e prevenção do suicídio, atendendo voluntária e gratuitamente todas as pessoas que querem e precisam conversar, sob total sigilo por telefone, e-mail e chat 24 horas todos os dias.’ Informações sobre o atendimento ligue: 188)</p>""", unsafe_allow_html=True)
+
+def perfil():
+    st.title("Perfil das vítimas")
+    df_masc = df_idade[df_idade['SEXO']=='Masculino']
+    df_masc =df_masc.groupby(['SEXO','RACACOR','ESTCIV','ESC','grupos']).size().to_frame().reset_index()
+    df_masc.columns = ['SEXO','RACACOR', 'ESTCIV', 'ESC','grupo/idade','total vitimas']
+    df_fem = df_idade[df_idade['SEXO']=='Feminino']
+    df_fem =df_fem.groupby(['SEXO','RACACOR','ESTCIV','ESC','grupos']).size().to_frame().reset_index()
+    df_fem.columns = ['SEXO','RACACOR', 'ESTCIV', 'ESC','grupo/idade','total vitimas']
+    df_masc = df_masc.sort_values('total vitimas', ascending = False).reset_index(drop=True)
+    df_fem = df_fem.sort_values('total vitimas', ascending = False).reset_index(drop=True)
+    with st.container():
+        with st.expander("Perfil Masculino"):
+            list_perfil_masc = []
+            label_perfil_masc = []
+
+            for i in range(0,5):
+                list_perfil_masc.append(f'{df_masc["total vitimas"][i]} vitimas')
+                label_perfil_masc.append(f'{i+1}°- {df_masc.loc[i][0]} , {df_masc.loc[i][1]} , {df_masc.loc[i][2]} ,Escolaridade: {df_masc.loc[i][3]} ,Entre {df_masc.loc[i][4]} Anos')
+            perfil_masc = make_text(5,
+          1,
+          10,
+          label_perfil_masc,
+          label =  list_perfil_masc,
+          font1_size = 15,
+          font2_size = 15,
+          ha = 'left',
+          font1_color = '#5F6A6A',
+          font2_color = '#A93226',
+          font1_weight = 'heavy',
+          font2_weight = 'bold',
+          title1 = "Perfil das vítimas do sexo masculino",
+          loc= 'center',
+          a = 0,
+          c = 0,
+          figsize = (12, 5))
+            st.pyplot(perfil_masc)
+        with st.expander("Taxa de suicídio"):
+            list_perfil_fem = []
+            label_perfil_fem = []
+
+            for i in range(0,5):
+                list_perfil_fem.append(f'{df_fem["total vitimas"][i]} vitimas')
+                label_perfil_fem.append(f'{i+1}°- {df_fem.loc[i][0]} , {df_fem.loc[i][1]} , {df_fem.loc[i][2]} ,Escolaridade: {df_fem.loc[i][3]} ,Entre {df_fem.loc[i][4]} Anos')
+            perfil_fem =make_text(5,
+          1,
+          10,
+          label_perfil_fem,
+          label =  list_perfil_fem,
+          font1_size = 15,
+          font2_size = 15,
+          ha = 'left',
+          font1_color = '#5F6A6A',
+          font2_color = '#A93226',
+          font1_weight = 'heavy',
+          font2_weight = 'bold',
+          title1 = "Perfil das vítimas do sexo feminino",
+          loc= 'center',
+          a = 0,
+          c = 0,
+          figsize = (12, 5))
+            st.pyplot(perfil_fem)
+        st.subheader("O perfil das vítimas foi gerado com base em atributos como ‘gênero, raça/cor, estado civil, escolaridade, e grupo de idades.")
+def dashboard():
+    with st.container():
+        st.title("Dashboard")
     #=====================================================================================#
     st.subheader("Selecione o ano:")
     ano = st.slider('', 2010, 2019, 2010) #slider
+    st.subheader("Selecione o gráfico:")
     option = st.selectbox(
-     'Escolha um gráfico:',
-     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil'))
+     '',
+     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade','Ocupação das vítimas'))
 
     #====================================== bonecos =============================================#
     data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
@@ -458,6 +527,126 @@ def dashboard():
                   title_font_size=20)
     def estadocivil():
         st.plotly_chart(estciv)
+#===================================== faixa etária =============================================#
+    color_map = ['#EAECEE' for _ in range(9)]
+    color_map[3] = color_map[2] = '#A93226' 
+
+    FE, ax = plt.subplots(1,1, figsize=(12, 10),dpi=600)
+    ax.bar(df_idade_gp_ano.loc[(ano)].index, df_idade_gp_ano.loc[(ano)]['size'], width=0.7, 
+       edgecolor='darkgray',
+       linewidth=0.6,color=color_map)
+
+
+# anotações
+    for i in range(0,len(df_idade_gp_ano.loc[(ano)].index)):
+        ax.annotate(f"{df_idade_gp_ano.loc[(ano)]['size'][i]}", 
+                   xy=(i, df_idade_gp_ano.loc[(ano)]['size'][i] + 3),
+                   va = 'bottom', ha='center',fontweight='light', fontfamily='serif')
+    for s in ['top', 'left', 'right']:
+        ax.spines[s].set_visible(False)
+    
+    ax.set_xticklabels(df_idade_gp_ano.loc[(ano)].index, fontfamily='serif', rotation=0)
+
+# titulos 
+
+    FE.text(0.09, 1, 'Suicídio no Brasil por faixa etária no período de {ano}'.format(ano=ano), fontsize=16, fontweight='bold', fontfamily='monospace')
+    FE.text(0.09, 0.95, 'As faixas etárias que mais cometem suicídio estão destacadas', fontsize=12, fontweight='light', fontfamily='monospace')
+
+
+    ax.grid(axis='y', linestyle='-', alpha=0.4) 
+    ax.set_axisbelow(True)
+
+#Axis labels
+
+    plt.xlabel("Faixa Etária", fontsize=12, fontweight='light', fontfamily='serif',loc='center',y=-2)
+    
+    def faixaetaria():
+        st.pyplot(FE)
+#=================================== local da ocência ===========================================#
+    local_o = px.bar(df_lococor.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_lococor.loc[(ano)].sort_values(by='size', ascending=False).index,
+             color=df_lococor.loc[(ano)].sort_values(by='size', ascending=True).index,
+             color_discrete_sequence=['#7B241C','#C0392B','#CD6155','#D98880','#F2D7D5'],
+             height=400,
+             width=850,
+             text='size',
+             template='ggplot2')
+    local_o.update_layout(yaxis_title='Número de Suicídios',
+                  xaxis_title='Local da ocorrência',
+                  title={
+                  'text': "<b>Locais onde ocerram os suicídios no período {ano} </b><br>".format(ano=ano),
+                  'xanchor': 'auto',
+                  'yanchor': 'top'},
+                  title_font_family="monospace",
+                  title_font_size=25)
+    
+    def local_ocorrencia():
+        st.plotly_chart(local_o)
+#==================================== escolaridade ==============================================#
+    df_esc = pd.DataFrame(df_esc_ano.loc[(ano)]).reset_index()
+    df_esc.columns = ['Escolaridade','size']
+    df_esc = pd.merge(df_esc, df2, on='Escolaridade')
+    df_esc = df_esc.sort_values(by='num', ascending=True)
+    df_esc= df_esc.reset_index(drop=True)
+    color_map = ['#EAECEE' for _ in range(9)]
+    color_map[df_esc['size'].argmax()]  = '#A93226' 
+
+    esc_fig, ax_esc = plt.subplots(1,1, figsize=(12, 10),dpi=600)
+    ax_esc.bar(df_esc['Escolaridade'], df_esc['size'], width=0.7, 
+       edgecolor='darkgray',
+       linewidth=0.6,color=color_map)
+
+
+#anotações
+    for i in df_esc['Escolaridade'].index:
+        ax_esc.annotate(f"{df_esc['size'][i]}", 
+                   xy=(i, df_esc['size'][i] + 3),
+                   va = 'bottom', ha='center',fontweight='light', fontfamily='serif')
+    for s in ['top', 'left', 'right']:
+        ax_esc.spines[s].set_visible(False)
+    
+    ax_esc.set_xticklabels(df_esc['Escolaridade'], fontfamily='serif', rotation=0)
+
+# Titulos
+
+    esc_fig.text(0.09, 1, 'Nível de escolaridade X Número de suicídios', fontsize=16, fontweight='bold', fontfamily='monospace')
+    esc_fig.text(0.09, 0.96, '1 a 3 anos : Fundamental 1 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+    esc_fig.text(0.09, 0.94, '4 a 7 anos : Fundamental 1 completo / Fundamental 2 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+    esc_fig.text(0.09, 0.92, '8 a 11 anos :  Ensino médio completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+    esc_fig.text(0.09, 0.90, '12 e mais : Ensino superior completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+    ax_esc.grid(axis='y', linestyle='-', alpha=0.4) 
+    ax_esc.set_axisbelow(True)
+
+#Axis labels
+
+    plt.xlabel("Escolaridade", fontsize=12, fontweight='light', fontfamily='serif',loc='center',y=-2)
+
+    def escolaridade():
+        st.pyplot(esc_fig)
+#==================================== ocupacao ==================================================#
+    df_ocup_ano = pd.DataFrame(df.groupby(['ano','SEXO','OCUP']).agg('size'))
+    df_ocup_ano.columns = ['size']
+    # Masculino 
+    
+    def ocupacao():
+        ocup_masc= make_text(1,
+          3,
+          2,
+          list(df_ocup_ano.loc[(ano,'Masculino')].sort_values(by='size',ascending= False)[:3]['size']),
+          list(df_ocup_ano.loc[(ano,'Masculino')].sort_values(by='size',ascending= False)[:3].index),
+          figsize = (20,2), 
+          title2 = 'Ocupação das vítimas do sexo Masculino',
+          font_title = 40)
+        st.pyplot(ocup_masc)
+        ocup_fem= make_text(1,
+          3,
+          2,
+          list(df_ocup_ano.loc[(ano,'Feminino')].sort_values(by='size',ascending= False)[:3]['size']),
+          list(df_ocup_ano.loc[(ano,'Feminino')].sort_values(by='size',ascending= False)[:3].index),
+          figsize = (20,2), 
+          title2 = 'Ocupação das vítimas do sexo Feminino',
+          font_title = 40)
+        st.pyplot(ocup_fem)
+          
 #====================================== code ====================================================#
     if option == 'Porcentagem de vítimas Masculinas e Femininas':
         vitimas()
@@ -467,11 +656,22 @@ def dashboard():
         Raçacor()
     elif option =="Número de suicídio por estado civil":
         estadocivil()
+    elif option =="Suicídio no Brasil por faixa etária":
+        faixaetaria()
+    elif option =="Locais onde ocerram os suicídios":
+        local_ocorrencia()
+    elif option =="Suicídio por nível de escolaridade":
+        escolaridade()
+    elif option =="Ocupação das vítimas":
+        ocupacao()
+
 #================================== code ============================================
 
 if options == "Início":
     home()
 elif options == "Setembro Amarelo":
     SetAmarelo()
+elif options =="Perfil Das Vítimas":
+    perfil()
 elif options =="Dashboard":
     dashboard()
