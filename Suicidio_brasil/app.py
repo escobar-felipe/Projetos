@@ -214,10 +214,9 @@ st.markdown("""
 st.sidebar.title('Navegation')
 options = st.sidebar.radio('Select a page:', 
     ['Início', 'Setembro Amarelo' , 'Perfil Das Vítimas','Dashboard'])
-header_html = """<img src="avatar.png" style="width:200px;height:200px;">"""
 col1, col2,col3,col4 = st.sidebar.columns(4)
 with col2:
-    st.image("avatar.png" ,width=150)
+    st.image("Suicidio_brasil/avatar.png" ,width=150)
 st.sidebar.text("""        Felipe Escobar
 Cursando Análise e Desenvolvimento 
 de Sistemas na ULBRA - Universidade
