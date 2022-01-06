@@ -187,7 +187,7 @@ df2 = pd.DataFrame({
 
 #==================================== page =================================================
 
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
      page_title="Suicídio Brasil",
      page_icon="chart_with_upwards_trend",
