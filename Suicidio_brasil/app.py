@@ -107,14 +107,14 @@ def make_text(rows, # number of rows
         
     plt.suptitle(sup_title, fontsize = font_suptitle) #by:ghermsen
 #============================ geojson =============================================
-geojson = json.load(open('escobar-felipe/Projetos/blob/main/Suicidio_brasil/csv/brasil_estados.json'))
+geojson = json.load(open('Suicidio_brasil/csv/brasil_estados.json'))
 
 #=================================== code ============================================
 
 
-df = pd.read_csv("escobar-felipe/Projetos/blob/main/Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
-df_censo=pd.read_csv('escobar-felipe/Projetos/blob/main/Suicidio_brasil/csv/IBGE2010.csv')
-df_pop = pd.read_csv('escobar-felipe/Projetos/blob/main/Suicidio_brasil/csv/popbrasil.csv')
+df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
+df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
+df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
 
 df.drop('Unnamed: 0', axis=1, inplace=True) #retirando coluna unnmamed
 
