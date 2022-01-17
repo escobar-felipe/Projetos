@@ -215,12 +215,11 @@ st.sidebar.title('Navegação')
 options = st.sidebar.radio('Selecione a página:', 
     ['Início', 'Setembro Amarelo' , 'Perfil Das Vítimas','Dashboard'])
 col1, col2,col3,col4 = st.sidebar.columns(4)
-with col2:
+with col3:
     st.image("Suicidio_brasil/avatar.png" ,width=150)
 st.sidebar.text("""        Felipe Escobar
-Cursando Análise e Desenvolvimento 
-de Sistemas na ULBRA - Universidade
-Luterana do Brasil.""")
+""")
+st.sidebar.write("&nbsp[![GitHub](https://img.shields.io/badge/GitHub-E3E3E3?style=for-the-badge&logo=github&logoColor=black)](https://github.com/escobar-felipe)&nbsp[![linkedin](https://img.shields.io/badge/Felipe_Escobar-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&link=https://tr.linkedin.com/in/beytullah-ali-g%C3%B6yem-461749152)](https://www.linkedin.com/in/escobar-felipe/)")
 #============ paginas ================#
 
 def home():
