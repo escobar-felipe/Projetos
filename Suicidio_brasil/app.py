@@ -107,22 +107,17 @@ def make_text(rows, # number of rows
         
     plt.suptitle(sup_title, fontsize = font_suptitle) #by:ghermsen
 #============================ geojson =============================================
-@st.cache(allow_output_mutation=True, persist = True)
-def geojson():
-    geojson = json.load(open('Suicidio_brasil/csv/brasil_estados.json'))
-    return geojson
+geojson = json.load(open('Suicidio_brasil/csv/brasil_estados.json'))
 
 #=================================== code ============================================
-@st.cache(allow_output_mutation=True, persist = True)
-def read_csv():
-    df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
-    df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
-    df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
-    return df , df_censo, df_pop
 
-df , df_censo, df_pop = read_csv()
+
+df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
+df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
+df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
 
 df.drop('Unnamed: 0', axis=1, inplace=True) #retirando coluna unnmamed
+
 df.drop(["CIRURGIA",'ESCMAE' ], axis=1, inplace=True) #drop columns(miss values)
 
 df['DTOBITO'] = pd.to_datetime( df['DTOBITO'] ,format="%Y/%m/%d")
@@ -227,7 +222,7 @@ Cursando Análise e Desenvolvimento
 de Sistemas na ULBRA - Universidade
 Luterana do Brasil.""")
 #============ paginas ================#
-@st.cache(allow_output_mutation=True, persist = True)
+
 def home():
     st.markdown('# Série histórica de suicídios no Brasil entre 2010 e 2019' , unsafe_allow_html=False)
 
@@ -352,14 +347,14 @@ def home():
     1 - A fragilidade social, famílias ou pessoas que estão perdendo sua representatividade na sociedade principalmente por questões socioeconômicas.
     2 - Problemas financeiros, de acordo com a pesquisa THE EMPLOYER’S GUIDE TO FINANCIAL WELLNESS, pessoas com dificuldades financeiras são 4x mais propensas a desenvolver a depressão.
      """)
-@st.cache(allow_output_mutation=True, persist = True)
+
 def SetAmarelo():
     st.title("Setembro Amarelo")
     st.markdown("""<p class="big-font">&emsp;O Setembro Amarelo é uma campanha de conscientização sobre a prevenção do suicídio, no dia 10 deste mês é comemorado o Dia Mundial de Prevenção ao Suicídio.<br>&emsp;A ideia da campanha visa conscientizar as pessoas sobre o suicídio, bem como evitar o seu acontecimento.
      A divulgação é um fator muito importante, o assunto suicídio ainda é um tabu em nossa sociedade, a campanha acredita que falar sobre o mesmo é uma forma de entender quem passa por situações que levem a ideias suicidas, ajudá-las a partir do momento em que as mesmas são identificadas.<br>
 &emsp;Caso esteja tendo esse tipo de pensamento ou passando por um momento de crise, busque ajuda. Os psicólogos são profissionais habilitados para tratar com esse tipo de problema ,assim como o apoio da família e amigos é muito importe nesse momento.<br>
 &emsp;O <a href="https://www.cvv.org.br/">'CVV — Centro de Valorização da Vida'</a> realiza apoio emocional e prevenção do suicídio, atendendo voluntária e gratuitamente todas as pessoas que querem e precisam conversar, sob total sigilo por telefone, e-mail e chat 24 horas todos os dias.’ Informações sobre o atendimento ligue: 188)</p>""", unsafe_allow_html=True)
-@st.cache(allow_output_mutation=True, persist = True)
+
 def perfil():
     st.title("Perfil das vítimas")
     df_masc = df_idade[df_idade['SEXO']=='Masculino']
@@ -434,15 +429,13 @@ def dashboard():
      ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade','Ocupação das vítimas'))
 
     #====================================== bonecos =============================================#
-    @st.cache(allow_output_mutation=True, persist = True)
-    def vitimas():
-        data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
+    data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
             'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
-        data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
+    data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
        'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
-        font_title = {'family': 'sans-serif', 'color':'#424949','weight': 'normal','size': 25}
+    font_title = {'family': 'sans-serif', 'color':'#424949','weight': 'normal','size': 25}
 
-        fig = plt.figure(
+    fig = plt.figure(
       FigureClass = Waffle,
       rows = 5,
       columns = 20,
@@ -463,30 +456,28 @@ def dashboard():
       icon_legend = True,
       figsize=(15,6)
     )
-        fig.set_tight_layout(False)
-    
+    fig.set_tight_layout(False)
+    def vitimas():
         st.pyplot(fig)
 # ================================================= mapa ===================================+#
-    @st.cache(allow_output_mutation=True, persist = True)
-    def mapa_suicide():
-        df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
-        df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
+    df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
+    df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
 
-        mapa = px.choropleth_mapbox(df_sui_pop, geojson=geojson, locations='estado', color='taxa',
+    mapa = px.choropleth_mapbox(df_sui_pop, geojson=geojson, locations='estado', color='taxa',
                            color_continuous_scale="reds",
                            mapbox_style="white-bg",
                            zoom=3.3, center =  {"lat":-15 ,"lon":  -51},
                            opacity=0.9,
                            height=900, width=800)
 
-        mapa.update_geos(fitbounds="locations", visible=False)
-        mapa.update_layout(title={
+    mapa.update_geos(fitbounds="locations", visible=False)
+    mapa.update_layout(title={
                 'text': "<b>Taxa de Suicídio por 100 mil habitantes dos estados</b><br><sup>Período de {ano}</sup>".format(ano=ano),
                 'xanchor': 'left',
                 'yanchor': 'top'},
                 title_font_family="monospace",
                 title_font_size=21)
-    
+    def mapa_suicide():
         st.plotly_chart(mapa)
 #===================================  racacor ====================================
 
