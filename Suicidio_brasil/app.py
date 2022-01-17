@@ -215,7 +215,7 @@ st.sidebar.title('Navegação')
 options = st.sidebar.radio('Selecione a página:', 
     ['Início', 'Setembro Amarelo' , 'Perfil Das Vítimas','Dashboard'])
 col1, col2,col3,col4 = st.sidebar.columns(4)
-with col3:
+with col2:
     st.image("Suicidio_brasil/avatar.png" ,width=150)
 st.sidebar.text("""        Felipe Escobar
 """)
