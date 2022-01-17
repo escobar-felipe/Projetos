@@ -434,6 +434,7 @@ def dashboard():
      ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade','Ocupação das vítimas'))
 
     #====================================== bonecos =============================================#
+    @st.cache(allow_output_mutation=True, persist = True)
     def vitimas():
         data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
             'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
@@ -466,24 +467,26 @@ def dashboard():
     
         st.pyplot(fig)
 # ================================================= mapa ===================================+#
-    df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
-    df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
+    @st.cache(allow_output_mutation=True, persist = True)
+    def mapa_suicide():
+        df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
+        df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
 
-    mapa = px.choropleth_mapbox(df_sui_pop, geojson=geojson, locations='estado', color='taxa',
+        mapa = px.choropleth_mapbox(df_sui_pop, geojson=geojson, locations='estado', color='taxa',
                            color_continuous_scale="reds",
                            mapbox_style="white-bg",
                            zoom=3.3, center =  {"lat":-15 ,"lon":  -51},
                            opacity=0.9,
                            height=900, width=800)
 
-    mapa.update_geos(fitbounds="locations", visible=False)
-    mapa.update_layout(title={
+        mapa.update_geos(fitbounds="locations", visible=False)
+        mapa.update_layout(title={
                 'text': "<b>Taxa de Suicídio por 100 mil habitantes dos estados</b><br><sup>Período de {ano}</sup>".format(ano=ano),
                 'xanchor': 'left',
                 'yanchor': 'top'},
                 title_font_family="monospace",
                 title_font_size=21)
-    def mapa_suicide():
+    
         st.plotly_chart(mapa)
 #===================================  racacor ====================================
 
