@@ -211,8 +211,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 #=============sidebar / menu ================#
 
-st.sidebar.title('Navegation')
-options = st.sidebar.radio('Select a page:', 
+st.sidebar.title('Navegação')
+options = st.sidebar.radio('Selecione a página:', 
     ['Início', 'Setembro Amarelo' , 'Perfil Das Vítimas','Dashboard'])
 col1, col2,col3,col4 = st.sidebar.columns(4)
 with col2:
@@ -391,7 +391,7 @@ def perfil():
           c = 0,
           figsize = (12, 5))
             st.pyplot(perfil_masc)
-        with st.expander("Taxa de suicídio"):
+        with st.expander("Perfil Feminino"):
             list_perfil_fem = []
             label_perfil_fem = []
 
