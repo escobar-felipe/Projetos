@@ -427,7 +427,7 @@ def dashboard():
     st.subheader("Selecione o gráfico:")
     option = st.selectbox(
      '',
-     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade','Ocupação das vítimas'))
+     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade',"Ocupação das vítimas"))
 
     #====================================== bonecos =============================================#
     def vitimas():
@@ -651,7 +651,7 @@ def dashboard():
           figsize = (20,2), 
           title2 = 'Ocupação das vítimas do sexo Feminino',
           font_title = 40)
-        return st.pyplot(ocup_masc),st.pyplot(ocup_fem)
+        st.pyplot(ocup_masc)
           
 #====================================== code ====================================================#
     if option == 'Porcentagem de vítimas Masculinas e Femininas':
