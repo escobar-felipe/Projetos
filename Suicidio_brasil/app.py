@@ -428,7 +428,6 @@ def dashboard():
      ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade',"Ocupação das vítimas"))
 
     #====================================== bonecos =============================================#
-    @st.experimental_memo
     def vitimas():
         data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
             'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
@@ -459,7 +458,7 @@ def dashboard():
     )
         fig.set_tight_layout(False)
     
-        return fig
+        return st.pyplot(fig)
 # ================================================= mapa ===================================+#
     #df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
 #    df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
@@ -481,7 +480,6 @@ def dashboard():
  #   def mapa_suicide():
  #       st.plotly_chart(mapa)
 #===================================  racacor ====================================
-    @st.experimental_memo
     def Raçacor():
         racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
              color=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
@@ -504,7 +502,7 @@ def dashboard():
         racacor.update_traces(texttemplate='%{text:.2s}', textposition='inside')
         racacor.update_layout(uniformtext_minsize=40, uniformtext_mode='hide')
     
-        return racacor
+        return st.plotly_chart(racacor)
 
 #================================== estado civil =========================================
     def estadocivil():
@@ -655,11 +653,11 @@ def dashboard():
           
 #====================================== code ====================================================#
     if option == 'Porcentagem de vítimas Masculinas e Femininas':
-        st.pyplot(vitimas())
+        vitimas()
     elif option == "Taxa de Suicídio por 100 mil habitantes dos estados":
         mapa_suicide()
     elif option =="Número de suicídio por RAÇA / COR":
-        st.plotly_chart(Raçacor())
+        Raçacor()
     elif option =="Número de suicídio por estado civil":
         estadocivil()
     elif option =="Suicídio no Brasil por faixa etária":
