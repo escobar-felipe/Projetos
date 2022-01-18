@@ -651,7 +651,7 @@ def dashboard():
           figsize = (20,2), 
           title2 = 'Ocupação das vítimas do sexo Feminino',
           font_title = 40)
-        st.pyplot(ocup_masc)
+        st.pyplot(ocup_fem)
           
 #====================================== code ====================================================#
     if option == 'Porcentagem de vítimas Masculinas e Femininas':
@@ -668,6 +668,7 @@ def dashboard():
         local_ocorrencia()
     elif option =="Suicídio por nível de escolaridade":
         escolaridade()
+        ocupacao()
     elif option =="Ocupação das vítimas":
         ocupacao()
 
