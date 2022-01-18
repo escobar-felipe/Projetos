@@ -198,12 +198,7 @@ df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idad
 #==================================== page =================================================
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
-st.set_page_config(
-     page_title="Suicídio Brasil",
-     page_icon="chart_with_upwards_trend",
-     layout="centered",
-     initial_sidebar_state="expanded",
- )
+###st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
 
 
 st.markdown("""
