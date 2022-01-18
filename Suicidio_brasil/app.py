@@ -117,6 +117,7 @@ def load():
     df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
     df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
     return geojson, df, df_censo,df_pop
+geojson , df ,df_censo,df_pop = load()
 @st.experimental_memo
 def load_csv():
 
@@ -191,9 +192,9 @@ def load_csv():
     'num': [0, 1, 2, 3, 4]})
 
     #=========================== RETURN ====================================
-    return df, df_data, df_pop_brasil, df_estado_ano, df_censo, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano,df_idade,df_lococor, df_esc_ano, df2
+    return df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano,df_idade,df_lococor, df_esc_ano, df2
 
-df, df_data, df_pop_brasil, df_estado_ano, df_censo, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano, df_idade, df_lococor, df_esc_ano, df2= load_csv()
+df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano, df_idade, df_lococor, df_esc_ano, df2= load_csv()
 #==================================== page =================================================
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
