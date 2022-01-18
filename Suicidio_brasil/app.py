@@ -660,8 +660,8 @@ def dashboard():
         faixaetaria()
     elif option =="Locais onde ocerram os suicídios":
         local_ocorrencia()
-    elif option =="Suicídio por nível de escolaridade":
-        escolaridade()
+    #elif option =="Suicídio por nível de escolaridade":
+        #escolaridade()
     elif option =="Ocupação das vítimas":
         ocupacao()
 
