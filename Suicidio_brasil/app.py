@@ -10,6 +10,7 @@ from wordcloud import WordCloud, STOPWORDS
 from PIL import Image
 
 #funções 
+@st.experimental_memo
 def make_text(rows, # number of rows
               cols, # number of cols
               texts, # number of texts to display
