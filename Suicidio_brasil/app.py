@@ -222,7 +222,7 @@ st.sidebar.text("""        Felipe Escobar
 """)
 st.sidebar.write("&nbsp[![GitHub](https://img.shields.io/badge/GitHub-E3E3E3?style=for-the-badge&logo=github&logoColor=black)](https://github.com/escobar-felipe)&nbsp[![linkedin](https://img.shields.io/badge/Felipe_Escobar-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&link=https://tr.linkedin.com/in/beytullah-ali-g%C3%B6yem-461749152)](https://www.linkedin.com/in/escobar-felipe/)")
 #============ paginas ================#
-
+@st.experimental_memo
 def home():
     st.markdown('# Série histórica de suicídios no Brasil entre 2010 e 2019' , unsafe_allow_html=False)
 
@@ -347,14 +347,14 @@ def home():
     1 - A fragilidade social, famílias ou pessoas que estão perdendo sua representatividade na sociedade principalmente por questões socioeconômicas.
     2 - Problemas financeiros, de acordo com a pesquisa THE EMPLOYER’S GUIDE TO FINANCIAL WELLNESS, pessoas com dificuldades financeiras são 4x mais propensas a desenvolver a depressão.
      """)
-
+@st.experimental_memo
 def SetAmarelo():
     st.title("Setembro Amarelo")
     st.markdown("""<p class="big-font">&emsp;O Setembro Amarelo é uma campanha de conscientização sobre a prevenção do suicídio, no dia 10 deste mês é comemorado o Dia Mundial de Prevenção ao Suicídio.<br>&emsp;A ideia da campanha visa conscientizar as pessoas sobre o suicídio, bem como evitar o seu acontecimento.
      A divulgação é um fator muito importante, o assunto suicídio ainda é um tabu em nossa sociedade, a campanha acredita que falar sobre o mesmo é uma forma de entender quem passa por situações que levem a ideias suicidas, ajudá-las a partir do momento em que as mesmas são identificadas.<br>
 &emsp;Caso esteja tendo esse tipo de pensamento ou passando por um momento de crise, busque ajuda. Os psicólogos são profissionais habilitados para tratar com esse tipo de problema ,assim como o apoio da família e amigos é muito importe nesse momento.<br>
 &emsp;O <a href="https://www.cvv.org.br/">'CVV — Centro de Valorização da Vida'</a> realiza apoio emocional e prevenção do suicídio, atendendo voluntária e gratuitamente todas as pessoas que querem e precisam conversar, sob total sigilo por telefone, e-mail e chat 24 horas todos os dias.’ Informações sobre o atendimento ligue: 188)</p>""", unsafe_allow_html=True)
-
+@st.experimental_memo
 def perfil():
     st.title("Perfil das vítimas")
     df_masc = df_idade[df_idade['SEXO']=='Masculino']
