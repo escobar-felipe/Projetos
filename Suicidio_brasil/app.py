@@ -608,7 +608,7 @@ def dashboard():
 
 # Titulos
 
-    esc_fig.text(0.09, 1, "Nível de escolaridade X Número de suicídios<sup>Período de {ano}</sup>", fontsize=16, fontweight='bold', fontfamily='monospace').format(ano=ano)
+    esc_fig.text(0.09, 1, "Nível de escolaridade X Número de suicídios no período de {ano}", fontsize=16, fontweight='bold', fontfamily='monospace').format(ano=ano)
     esc_fig.text(0.09, 0.96, '1 a 3 anos : Fundamental 1 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
     esc_fig.text(0.09, 0.94, '4 a 7 anos : Fundamental 1 completo / Fundamental 2 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
     esc_fig.text(0.09, 0.92, '8 a 11 anos :  Ensino médio completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
