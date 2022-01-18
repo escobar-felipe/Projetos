@@ -628,11 +628,12 @@ def dashboard():
     
         return st.pyplot(esc_fig)
 #==================================== ocupacao ==================================================#
-    df_ocup_ano = pd.DataFrame(df.groupby(['ano','SEXO','OCUP']).agg('size'))
-    df_ocup_ano.columns = ['size']
+
     # Masculino 
     
     def ocupacao():
+        df_ocup_ano = pd.DataFrame(df.groupby(['ano','SEXO','OCUP']).agg('size'))
+        df_ocup_ano.columns = ['size']
         ocup_masc= make_text(1,
           3,
           2,
