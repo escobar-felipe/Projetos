@@ -111,14 +111,16 @@ def make_text(rows, # number of rows
 @st.experimental_memo
 def load():
     geojson = json.load(open('Suicidio_brasil/csv/brasil_estados.json'))
-
 #=================================== code ============================================
+
     df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
     df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
     df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
+
     return geojson, df, df_censo,df_pop
 geojson , df ,df_censo,df_pop = load()
 @st.experimental_memo
+
 def load_csv():
 
 
@@ -416,7 +418,7 @@ def perfil():
           figsize = (12, 5))
             st.pyplot(perfil_fem)
         st.subheader("O perfil das vítimas foi gerado com base em atributos como ‘gênero, raça/cor, estado civil, escolaridade, e grupo de idades.")
-def dashboard():
+def dashboard(df_estado_ano,df_censo):
     with st.container():
         st.title("Dashboard")
     #=====================================================================================#
@@ -672,4 +674,4 @@ elif options == "Setembro Amarelo":
 elif options =="Perfil Das Vítimas":
     perfil()
 elif options =="Dashboard":
-    dashboard()
+    dashboard(df_estado_ano,df_censo)
