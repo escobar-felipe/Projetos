@@ -582,46 +582,47 @@ def dashboard():
     def local_ocorrencia():
         st.plotly_chart(local_o)
 #==================================== escolaridade ==============================================#
-    df_esc = pd.DataFrame(df_esc_ano.loc[(ano)]).reset_index()
-    df_esc.columns = ['Escolaridade','size']
-    df_esc = pd.merge(df_esc, df2, on='Escolaridade')
-    df_esc = df_esc.sort_values(by='num', ascending=True)
-    df_esc= df_esc.reset_index(drop=True)
-    color_map = ['#EAECEE' for _ in range(9)]
-    color_map[df_esc['size'].argmax()]  = '#A93226' 
+    def escolaridade():
+        df_esc = pd.DataFrame(df_esc_ano.loc[(ano)]).reset_index()
+        df_esc.columns = ['Escolaridade','size']
+        df_esc = pd.merge(df_esc, df2, on='Escolaridade')
+        df_esc = df_esc.sort_values(by='num', ascending=True)
+        df_esc= df_esc.reset_index(drop=True)
+        color_map = ['#EAECEE' for _ in range(9)]
+        color_map[df_esc['size'].argmax()]  = '#A93226' 
 
-    esc_fig, ax_esc = plt.subplots(1,1, figsize=(12, 10),dpi=600)
-    ax_esc.bar(df_esc['Escolaridade'], df_esc['size'], width=0.7, 
-       edgecolor='darkgray',
-       linewidth=0.6,color=color_map)
+        esc_fig, ax_esc = plt.subplots(1,1, figsize=(12, 10),dpi=600)
+        ax_esc.bar(df_esc['Escolaridade'], df_esc['size'], width=0.7, 
+        edgecolor='darkgray',
+        linewidth=0.6,color=color_map)
 
 
 #anotações
-    for i in df_esc['Escolaridade'].index:
-        ax_esc.annotate(f"{df_esc['size'][i]}", 
+        for i in df_esc['Escolaridade'].index:
+            ax_esc.annotate(f"{df_esc['size'][i]}", 
                    xy=(i, df_esc['size'][i] + 3),
                    va = 'bottom', ha='center',fontweight='light', fontfamily='serif')
-    for s in ['top', 'left', 'right']:
-        ax_esc.spines[s].set_visible(False)
+        for s in ['top', 'left', 'right']:
+            ax_esc.spines[s].set_visible(False)
     
-    ax_esc.set_xticklabels(df_esc['Escolaridade'], fontfamily='serif', rotation=0)
+        ax_esc.set_xticklabels(df_esc['Escolaridade'], fontfamily='serif', rotation=0)
 
 # Titulos
 
-    esc_fig.text(0.09, 1, "Nível de escolaridade X Número de suicídios", fontsize=16, fontweight='bold', fontfamily='monospace')
-    esc_fig.text(0.09, 0.96, '1 a 3 anos : Fundamental 1 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
-    esc_fig.text(0.09, 0.94, '4 a 7 anos : Fundamental 1 completo / Fundamental 2 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
-    esc_fig.text(0.09, 0.92, '8 a 11 anos :  Ensino médio completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
-    esc_fig.text(0.09, 0.90, '12 e mais : Ensino superior completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
-    ax_esc.grid(axis='y', linestyle='-', alpha=0.4) 
-    ax_esc.set_axisbelow(True)
+        esc_fig.text(0.09, 1, "Nível de escolaridade X Número de suicídios", fontsize=16, fontweight='bold', fontfamily='monospace')
+        esc_fig.text(0.09, 0.96, '1 a 3 anos : Fundamental 1 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+        esc_fig.text(0.09, 0.94, '4 a 7 anos : Fundamental 1 completo / Fundamental 2 incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+        esc_fig.text(0.09, 0.92, '8 a 11 anos :  Ensino médio completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+        esc_fig.text(0.09, 0.90, '12 e mais : Ensino superior completo ou incompleto', fontsize=12, fontweight='light', fontfamily='monospace')
+        ax_esc.grid(axis='y', linestyle='-', alpha=0.4) 
+        ax_esc.set_axisbelow(True)
 
 #Axis labels
 
-    plt.xlabel("Escolaridade", fontsize=12, fontweight='light', fontfamily='serif',loc='center',y=-2)
+        plt.xlabel("Escolaridade", fontsize=12, fontweight='light', fontfamily='serif',loc='center',y=-2)
 
-    def escolaridade():
-        st.pyplot(esc_fig)
+    
+        return st.pyplot(esc_fig)
 #==================================== ocupacao ==================================================#
     df_ocup_ano = pd.DataFrame(df.groupby(['ano','SEXO','OCUP']).agg('size'))
     df_ocup_ano.columns = ['size']
@@ -660,8 +661,8 @@ def dashboard():
         faixaetaria()
     elif option =="Locais onde ocerram os suicídios":
         local_ocorrencia()
-    #elif option =="Suicídio por nível de escolaridade":
-        #escolaridade()
+    elif option =="Suicídio por nível de escolaridade":
+        escolaridade()
     elif option =="Ocupação das vítimas":
         ocupacao()
 
