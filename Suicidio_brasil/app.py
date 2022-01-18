@@ -428,6 +428,7 @@ def dashboard():
      ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade',"Ocupação das vítimas"))
 
     #====================================== bonecos =============================================#
+    @st.experimental_memo
     def vitimas():
         data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
             'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
@@ -480,6 +481,7 @@ def dashboard():
  #   def mapa_suicide():
  #       st.plotly_chart(mapa)
 #===================================  racacor ====================================
+    @st.experimental_memo
     def Raçacor():
         racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
              color=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
@@ -505,6 +507,7 @@ def dashboard():
         return st.plotly_chart(racacor)
 
 #================================== estado civil =========================================
+    @st.experimental_memo
     def estadocivil():
         estciv = px.bar(df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True), x="size",y=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
              color=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
@@ -528,6 +531,7 @@ def dashboard():
     
         return st.plotly_chart(estciv)
 #===================================== faixa etária =============================================#
+    @st.experimental_memo
     def faixaetaria():
         color_map = ['#EAECEE' for _ in range(9)]
         color_map[3] = color_map[2] = '#A93226' 
@@ -564,6 +568,7 @@ def dashboard():
     
         return st.pyplot(FE)
 #=================================== local da ocência ===========================================#
+    @st.experimental_memo
     def local_ocorrencia():
         local_o = px.bar(df_lococor.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_lococor.loc[(ano)].sort_values(by='size', ascending=False).index,
              color=df_lococor.loc[(ano)].sort_values(by='size', ascending=True).index,
@@ -584,6 +589,7 @@ def dashboard():
     
         return st.plotly_chart(local_o)
 #==================================== escolaridade ==============================================#
+    @st.experimental_memo
     def escolaridade():
         df_esc = pd.DataFrame(df_esc_ano.loc[(ano)]).reset_index()
         df_esc.columns = ['Escolaridade','size']
@@ -628,7 +634,7 @@ def dashboard():
 #==================================== ocupacao ==================================================#
 
     # Masculino 
-    
+    @st.experimental_memo
     def ocupacao():
         df_ocup_ano = pd.DataFrame(df.groupby(['ano','SEXO','OCUP']).agg('size'))
         df_ocup_ano.columns = ['size']
