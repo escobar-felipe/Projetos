@@ -222,7 +222,7 @@ st.sidebar.text("""        Felipe Escobar
 """)
 st.sidebar.write("&nbsp[![GitHub](https://img.shields.io/badge/GitHub-E3E3E3?style=for-the-badge&logo=github&logoColor=black)](https://github.com/escobar-felipe)&nbsp[![linkedin](https://img.shields.io/badge/Felipe_Escobar-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&link=https://tr.linkedin.com/in/beytullah-ali-g%C3%B6yem-461749152)](https://www.linkedin.com/in/escobar-felipe/)")
 #============ paginas ================#
-
+@st.experimental_memo
 def home():
     st.markdown('# Série histórica de suicídios no Brasil entre 2010 e 2019' , unsafe_allow_html=False)
 
