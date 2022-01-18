@@ -108,84 +108,91 @@ def make_text(rows, # number of rows
         
     plt.suptitle(sup_title, fontsize = font_suptitle) #by:ghermsen
 #============================ geojson =============================================
-geojson = json.load(open('Suicidio_brasil/csv/brasil_estados.json'))
+@st.experimental_memo
+def load_csv():
+
+    geojson = json.load(open('Suicidio_brasil/csv/brasil_estados.json'))
 
 #=================================== code ============================================
 
 
-df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
-df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
-df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
+    df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
+    df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
+    df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
 
-df.drop('Unnamed: 0', axis=1, inplace=True) #retirando coluna unnmamed
+    df.drop('Unnamed: 0', axis=1, inplace=True) #retirando coluna unnmamed
 
-df.drop(["CIRURGIA",'ESCMAE' ], axis=1, inplace=True) #drop columns(miss values)
+    df.drop(["CIRURGIA",'ESCMAE' ], axis=1, inplace=True) #drop columns(miss values)
 
-df['DTOBITO'] = pd.to_datetime( df['DTOBITO'] ,format="%Y/%m/%d")
-df['DTNASC']=  pd.to_datetime( df['DTNASC'] ,format="%Y/%m/%d",errors = 'coerce')
-df['ano_tri'] =df['DTOBITO'].dt.to_period("Q")
-df['ano_mes'] =df['DTOBITO'].dt.strftime('%Y-%m')
-df['ano_nasc'] =df['DTNASC'].dt.strftime('%Y')
+    df['DTOBITO'] = pd.to_datetime( df['DTOBITO'] ,format="%Y/%m/%d")
+    df['DTNASC']=  pd.to_datetime( df['DTNASC'] ,format="%Y/%m/%d",errors = 'coerce')
+    df['ano_tri'] =df['DTOBITO'].dt.to_period("Q")
+    df['ano_mes'] =df['DTOBITO'].dt.strftime('%Y-%m')
+    df['ano_nasc'] =df['DTNASC'].dt.strftime('%Y')
 
 #=============================== suicídio =============================
 
-df_data = df.groupby('ano_mes').agg('size').reset_index()
+    df_data = df.groupby('ano_mes').agg('size').reset_index()
 
-df_data.columns = ['ano_mes', 'size']
+    df_data.columns = ['ano_mes', 'size']
 
 #================================ taxa 100mil habitantes ===================================
-df_ano = df.groupby('ano').agg('size').reset_index()
-df_ano.columns = ['year', 'size']
-df_pop_brasil = pd.merge(df_ano, df_pop,how='inner', on="year")
-df_pop_brasil['taxa']= (df_pop_brasil['size']/df_pop_brasil['Brazil'])*100000
+    df_ano = df.groupby('ano').agg('size').reset_index()
+    df_ano.columns = ['year', 'size']
+    df_pop_brasil = pd.merge(df_ano, df_pop,how='inner', on="year")
+    df_pop_brasil['taxa']= (df_pop_brasil['size']/df_pop_brasil['Brazil'])*100000
 
 
 #================================= mapa ====================================================
-df_estado_ano = pd.DataFrame(df.groupby(['ano','estado']).agg('size'))
-df_estado_ano.columns = ['size']
-df_censo.columns =['estado', 'censo2010']
+    df_estado_ano = pd.DataFrame(df.groupby(['ano','estado']).agg('size'))
+    df_estado_ano.columns = ['size']
+    df_censo.columns =['estado', 'censo2010']
 
 #================================ homem x mulher ===========================================
 
-k = df.groupby(['ano','SEXO'])['SEXO'].count()
-k_df = pd.DataFrame(k)
+    k = df.groupby(['ano','SEXO'])['SEXO'].count()
+    k_df = pd.DataFrame(k)
 
-for ano in df['ano'].unique():
-    divisor = k_df.loc[(ano)].sum()
-    k_df.loc[(ano, "Feminino")]=(k_df.loc[(ano, "Feminino")]/divisor).round(2)
-    k_df.loc[(ano, "Masculino")]=(k_df.loc[(ano, "Masculino")]/divisor).round(2)
+    for ano in df['ano'].unique():
+        divisor = k_df.loc[(ano)].sum()
+        k_df.loc[(ano, "Feminino")]=(k_df.loc[(ano, "Feminino")]/divisor).round(2)
+        k_df.loc[(ano, "Masculino")]=(k_df.loc[(ano, "Masculino")]/divisor).round(2)
 
 #=================================== racacor ================================================
-df_raca_ano = pd.DataFrame(df.groupby(['ano','RACACOR']).agg('size'))
-df_raca_ano.columns=['size']
+    df_raca_ano = pd.DataFrame(df.groupby(['ano','RACACOR']).agg('size'))
+    df_raca_ano.columns=['size']
 
 #================================== estado civil ===========================================
-df['ESTCIV'].fillna('Não Informado', inplace=True)
-df_estciv_ano = pd.DataFrame(df.groupby(['ano','ESTCIV']).agg('size'))
-df_estciv_ano.columns = ['size']
+    df['ESTCIV'].fillna('Não Informado', inplace=True)
+    df_estciv_ano = pd.DataFrame(df.groupby(['ano','ESTCIV']).agg('size'))
+    df_estciv_ano.columns = ['size']
 #================================= faixa etária ============================================
-df_idade = df.dropna(subset = ['DTNASC'])
-df_idade = df[df['ano_nasc'].astype(float).between(1925, 2019)]
-df_idade['idade'] = ((df_idade.DTOBITO - df_idade.DTNASC)/np.timedelta64(1, 'Y')).astype('int')
-bins= [0,10,20,30,40,50,60,70,80,90,110]
-labels = ['0-10','10-20','20-30','30-40','40-50','50-60','60-70','70-80','80-90','90-110']
-df_idade['grupos'] = pd.cut(df_idade['idade'], bins=bins, labels=labels, right=False)
-df_idade_gp_ano = pd.DataFrame(df_idade.groupby(['ano','grupos']).agg('size'))
-df_idade_gp_ano.columns = ['size']
+    df_idade = df.dropna(subset = ['DTNASC'])
+    df_idade = df[df['ano_nasc'].astype(float).between(1925, 2019)]
+    df_idade['idade'] = ((df_idade.DTOBITO - df_idade.DTNASC)/np.timedelta64(1, 'Y')).astype('int')
+    bins= [0,10,20,30,40,50,60,70,80,90,110]
+    labels = ['0-10','10-20','20-30','30-40','40-50','50-60','60-70','70-80','80-90','90-110']
+    df_idade['grupos'] = pd.cut(df_idade['idade'], bins=bins, labels=labels, right=False)
+    df_idade_gp_ano = pd.DataFrame(df_idade.groupby(['ano','grupos']).agg('size'))
+    df_idade_gp_ano.columns = ['size']
 
 #==================================== Local da ocorrência ==================================
-df['LOCOCOR'].fillna('Não Informado', inplace=True)
-df['LOCOCOR'].replace('Outro estabelecimento de saúde','Departamentos de Saúde', inplace=True)
-df['LOCOCOR'].replace('Hospital','Departamentos de Saúde', inplace=True)
-df_lococor = pd.DataFrame(df.groupby(['ano','LOCOCOR']).agg('size'))
-df_lococor.columns = ['size']
+    df['LOCOCOR'].fillna('Não Informado', inplace=True)
+    df['LOCOCOR'].replace('Outro estabelecimento de saúde','Departamentos de Saúde', inplace=True)
+    df['LOCOCOR'].replace('Hospital','Departamentos de Saúde', inplace=True)
+    df_lococor = pd.DataFrame(df.groupby(['ano','LOCOCOR']).agg('size'))
+    df_lococor.columns = ['size']
 #=================================== escolaridade ==========================================
-df_esc_ano = pd.DataFrame(df.groupby(['ano', 'ESC']).agg('size'))
-df_esc_ano.columns = ['size']
-df2 = pd.DataFrame({
+    df_esc_ano = pd.DataFrame(df.groupby(['ano', 'ESC']).agg('size'))
+    df_esc_ano.columns = ['size']
+    df2 = pd.DataFrame({
     'Escolaridade': ['1 a 3 anos', '4 a 7 anos', '8 a 11 anos', '12 e mais', 'Nenhuma'],
     'num': [0, 1, 2, 3, 4]})
 
+    #=========================== RETURN ====================================
+    return df, df_data, df_pop_brasil, df_estado_ano, df_censo, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano,df_idade,df_lococor, df_esc_ano, df2
+
+df, df_data, df_pop_brasil, df_estado_ano, df_censo, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano, df_idade, df_lococor, df_esc_ano, df2= load_csv()
 #==================================== page =================================================
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -222,7 +229,7 @@ st.sidebar.text("""        Felipe Escobar
 """)
 st.sidebar.write("&nbsp[![GitHub](https://img.shields.io/badge/GitHub-E3E3E3?style=for-the-badge&logo=github&logoColor=black)](https://github.com/escobar-felipe)&nbsp[![linkedin](https://img.shields.io/badge/Felipe_Escobar-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&link=https://tr.linkedin.com/in/beytullah-ali-g%C3%B6yem-461749152)](https://www.linkedin.com/in/escobar-felipe/)")
 #============ paginas ================#
-@st.experimental_memo
+
 def home():
     st.markdown('# Série histórica de suicídios no Brasil entre 2010 e 2019' , unsafe_allow_html=False)
 
@@ -326,7 +333,7 @@ def home():
                     borderwidth=2,
                     borderpad=4,
                     bgcolor="grey")
-                
+              
 
     #============================================================================================#
     with st.container():
