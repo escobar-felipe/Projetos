@@ -430,13 +430,14 @@ def dashboard():
      ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade','Ocupação das vítimas'))
 
     #====================================== bonecos =============================================#
-    data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
+    def vitimas():
+        data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
             'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
-    data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
+        data = {'Masculino':round((k_df.loc[(ano)].T['Masculino']['SEXO']*100), 2),
        'Feminino':round((k_df.loc[(ano)].T['Feminino']['SEXO']*100), 2)}
-    font_title = {'family': 'sans-serif', 'color':'#424949','weight': 'normal','size': 25}
+        font_title = {'family': 'sans-serif', 'color':'#424949','weight': 'normal','size': 25}
 
-    fig = plt.figure(
+        fig = plt.figure(
       FigureClass = Waffle,
       rows = 5,
       columns = 20,
@@ -457,9 +458,9 @@ def dashboard():
       icon_legend = True,
       figsize=(15,6)
     )
-    fig.set_tight_layout(False)
-    def vitimas():
-        st.pyplot(fig)
+        fig.set_tight_layout(False)
+    
+        return st.pyplot(fig)
 # ================================================= mapa ===================================+#
     #df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
 #    df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
@@ -481,15 +482,15 @@ def dashboard():
  #   def mapa_suicide():
  #       st.plotly_chart(mapa)
 #===================================  racacor ====================================
-
-    racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
+    def Raçacor():
+        racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
              color=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
             title='Número de suicídio por RAÇA / COR',
              color_discrete_sequence=['#7B241C','#C0392B','#CD6155','#D98880','#F2D7D5','#F9EBEA'],
             height=400,
              width=800,text='size',
             template ='ggplot2')
-    racacor.update_layout(yaxis_title='Número de Suicídios',
+        racacor.update_layout(yaxis_title='Número de Suicídios',
                  xaxis_title='RAÇA / COR',
                  font=dict(
                 family="Courier New, monospace",
@@ -500,13 +501,14 @@ def dashboard():
                   'yanchor': 'top'},
                   title_font_family="monospace",
                   title_font_size=20)
-    racacor.update_traces(texttemplate='%{text:.2s}', textposition='inside')
-    racacor.update_layout(uniformtext_minsize=40, uniformtext_mode='hide')
-    def Raçacor():
-        st.plotly_chart(racacor)
+        racacor.update_traces(texttemplate='%{text:.2s}', textposition='inside')
+        racacor.update_layout(uniformtext_minsize=40, uniformtext_mode='hide')
+    
+        return st.plotly_chart(racacor)
 
 #================================== estado civil =========================================
-    estciv = px.bar(df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True), x="size",y=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
+    def estadocivil():
+        estciv = px.bar(df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True), x="size",y=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
              color=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
              title="<b>Número de suicídio por estado civil<br><sup>Período de {ano}</sup>".format(ano=ano),
              color_discrete_sequence=['#FADBD8','#E6B0AA','#D98880','#CD6155','#C0392B','#7B241C'],
@@ -514,9 +516,9 @@ def dashboard():
              width=850,
              text=df_estciv_ano.loc[(ano)].sort_values(by='size', ascending=True).index,
              template='ggplot2')
-    estciv.update_traces( textposition='outside',textfont_size=20)
-    estciv.update_yaxes(showticklabels=False)
-    estciv.update_layout(xaxis_range=[0,7200],
+        estciv.update_traces( textposition='outside',textfont_size=20)
+        estciv.update_yaxes(showticklabels=False)
+        estciv.update_layout(xaxis_range=[0,7200],
                   xaxis_title='Suicídios',
                   yaxis_title='Estado Civil',
                   title={
@@ -525,52 +527,54 @@ def dashboard():
                   'yanchor': 'top'},
                   title_font_family="monospace",
                   title_font_size=20)
-    def estadocivil():
-        st.plotly_chart(estciv)
+    
+        return st.plotly_chart(estciv)
 #===================================== faixa etária =============================================#
-    color_map = ['#EAECEE' for _ in range(9)]
-    color_map[3] = color_map[2] = '#A93226' 
+    def faixaetaria():
+        color_map = ['#EAECEE' for _ in range(9)]
+        color_map[3] = color_map[2] = '#A93226' 
 
-    FE, ax = plt.subplots(1,1, figsize=(12, 10),dpi=600)
-    ax.bar(df_idade_gp_ano.loc[(ano)].index, df_idade_gp_ano.loc[(ano)]['size'], width=0.7, 
+        FE, ax = plt.subplots(1,1, figsize=(12, 10),dpi=600)
+        ax.bar(df_idade_gp_ano.loc[(ano)].index, df_idade_gp_ano.loc[(ano)]['size'], width=0.7, 
        edgecolor='darkgray',
        linewidth=0.6,color=color_map)
 
 
 # anotações
-    for i in range(0,len(df_idade_gp_ano.loc[(ano)].index)):
-        ax.annotate(f"{df_idade_gp_ano.loc[(ano)]['size'][i]}", 
+        for i in range(0,len(df_idade_gp_ano.loc[(ano)].index)):
+            ax.annotate(f"{df_idade_gp_ano.loc[(ano)]['size'][i]}", 
                    xy=(i, df_idade_gp_ano.loc[(ano)]['size'][i] + 3),
                    va = 'bottom', ha='center',fontweight='light', fontfamily='serif')
-    for s in ['top', 'left', 'right']:
-        ax.spines[s].set_visible(False)
+        for s in ['top', 'left', 'right']:
+            ax.spines[s].set_visible(False)
     
-    ax.set_xticklabels(df_idade_gp_ano.loc[(ano)].index, fontfamily='serif', rotation=0)
+        ax.set_xticklabels(df_idade_gp_ano.loc[(ano)].index, fontfamily='serif', rotation=0)
 
 # titulos 
 
-    FE.text(0.09, 1, 'Suicídio no Brasil por faixa etária no período de {ano}'.format(ano=ano), fontsize=16, fontweight='bold', fontfamily='monospace')
-    FE.text(0.09, 0.95, 'As faixas etárias que mais cometem suicídio estão destacadas', fontsize=12, fontweight='light', fontfamily='monospace')
+        FE.text(0.09, 1, 'Suicídio no Brasil por faixa etária no período de {ano}'.format(ano=ano), fontsize=16, fontweight='bold', fontfamily='monospace')
+        FE.text(0.09, 0.95, 'As faixas etárias que mais cometem suicídio estão destacadas', fontsize=12, fontweight='light', fontfamily='monospace')
 
 
-    ax.grid(axis='y', linestyle='-', alpha=0.4) 
-    ax.set_axisbelow(True)
+        ax.grid(axis='y', linestyle='-', alpha=0.4) 
+        ax.set_axisbelow(True)
 
 #Axis labels
 
-    plt.xlabel("Faixa Etária", fontsize=12, fontweight='light', fontfamily='serif',loc='center',y=-2)
+        plt.xlabel("Faixa Etária", fontsize=12, fontweight='light', fontfamily='serif',loc='center',y=-2)
     
-    def faixaetaria():
-        st.pyplot(FE)
+    
+        return st.pyplot(FE)
 #=================================== local da ocência ===========================================#
-    local_o = px.bar(df_lococor.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_lococor.loc[(ano)].sort_values(by='size', ascending=False).index,
+    def local_ocorrencia():
+        local_o = px.bar(df_lococor.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_lococor.loc[(ano)].sort_values(by='size', ascending=False).index,
              color=df_lococor.loc[(ano)].sort_values(by='size', ascending=True).index,
              color_discrete_sequence=['#7B241C','#C0392B','#CD6155','#D98880','#F2D7D5'],
              height=400,
              width=850,
              text='size',
              template='ggplot2')
-    local_o.update_layout(yaxis_title='Número de Suicídios',
+        local_o.update_layout(yaxis_title='Número de Suicídios',
                   xaxis_title='Local da ocorrência',
                   title={
                   'text': "<b>Locais onde ocerram os suicídios no período {ano} </b><br>".format(ano=ano),
@@ -579,8 +583,8 @@ def dashboard():
                   title_font_family="monospace",
                   title_font_size=25)
     
-    def local_ocorrencia():
-        st.plotly_chart(local_o)
+    
+        return st.plotly_chart(local_o)
 #==================================== escolaridade ==============================================#
     def escolaridade():
         df_esc = pd.DataFrame(df_esc_ano.loc[(ano)]).reset_index()
