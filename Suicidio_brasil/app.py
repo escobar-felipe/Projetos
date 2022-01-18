@@ -128,6 +128,7 @@ def load():
     df = pd.read_csv("Suicidio_brasil/csv/suicidios_2010_a_2019.csv")
     df_censo=pd.read_csv('Suicidio_brasil/csv/IBGE2010.csv')
     df_pop = pd.read_csv('Suicidio_brasil/csv/popbrasil.csv')
+    df_censo.columns =['estado', 'censo2010']
 
     return geojson, df, df_censo,df_pop
 geojson , df ,df_censo,df_pop = load()
@@ -162,7 +163,6 @@ def load_csv():
 #================================= mapa ====================================================
     df_estado_ano = pd.DataFrame(df.groupby(['ano','estado']).agg('size'))
     df_estado_ano.columns = ['size']
-    df_censo.columns =['estado', 'censo2010']
 
 
 #================================ homem x mulher ===========================================
