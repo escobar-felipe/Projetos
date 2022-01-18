@@ -9,6 +9,19 @@ import json
 from wordcloud import WordCloud, STOPWORDS
 from PIL import Image
 
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
+
+
+st.markdown("""
+<style>
+.big-font {
+    font-size:20px !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 #funções 
 def make_text(rows, # number of rows
               cols, # number of cols
@@ -118,8 +131,8 @@ def load():
 
     return geojson, df, df_censo,df_pop
 geojson , df ,df_censo,df_pop = load()
-@st.experimental_memo
 
+@st.experimental_memo
 def load_csv():
 
 
@@ -196,20 +209,6 @@ def load_csv():
     return df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano,df_idade,df_lococor, df_esc_ano, df2
 
 df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano, df_idade, df_lococor, df_esc_ano, df2= load_csv()
-#==================================== page =================================================
-
-st.set_option('deprecation.showPyplotGlobalUse', False)
-###st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
-
-
-st.markdown("""
-<style>
-.big-font {
-    font-size:20px !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
 #=============sidebar / menu ================#
 
 st.sidebar.title('Navegação')
