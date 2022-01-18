@@ -481,6 +481,7 @@ def dashboard():
  #   def mapa_suicide():
  #       st.plotly_chart(mapa)
 #===================================  racacor ====================================
+    @st.experimental_memo
     def Raçacor():
         racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
              color=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
@@ -503,7 +504,7 @@ def dashboard():
         racacor.update_traces(texttemplate='%{text:.2s}', textposition='inside')
         racacor.update_layout(uniformtext_minsize=40, uniformtext_mode='hide')
     
-        return st.plotly_chart(racacor)
+        return racacor
 
 #================================== estado civil =========================================
     def estadocivil():
@@ -658,7 +659,7 @@ def dashboard():
     elif option == "Taxa de Suicídio por 100 mil habitantes dos estados":
         mapa_suicide()
     elif option =="Número de suicídio por RAÇA / COR":
-        Raçacor()
+        st.plotly_chart(Raçacor())
     elif option =="Número de suicídio por estado civil":
         estadocivil()
     elif option =="Suicídio no Brasil por faixa etária":
