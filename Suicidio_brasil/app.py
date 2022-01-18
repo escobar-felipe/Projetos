@@ -164,6 +164,7 @@ def load_csv():
     df_estado_ano.columns = ['size']
     df_censo.columns =['estado', 'censo2010']
 
+
 #================================ homem x mulher ===========================================
 
     k = df.groupby(['ano','SEXO'])['SEXO'].count()
@@ -460,25 +461,25 @@ def dashboard():
     
         return st.pyplot(fig)
 # ================================================= mapa ===================================+#
-    #df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
-#    df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
-#
-#    mapa = px.choropleth_mapbox(df_sui_pop, geojson=geojson, locations='estado', color='taxa',
-#                           color_continuous_scale="reds",
-#                           mapbox_style="white-bg",
-#                           zoom=3.3, center =  {"lat":-15 ,"lon":  -51},
-#                           opacity=0.9,
-#                           height=900, width=800)
-#
- #   mapa.update_geos(fitbounds="locations", visible=False)
- #   mapa.update_layout(title={
- #               'text': "<b>Taxa de Suicídio por 100 mil habitantes dos estados</b><br><sup>Período de {ano}</sup>".format(ano=ano),
- #               'xanchor': 'left',
- #               'yanchor': 'top'},
- #               title_font_family="monospace",
- #               title_font_size=21)
- #   def mapa_suicide():
- #       st.plotly_chart(mapa)
+    def mapa_suicide():
+        df_sui_pop = pd.merge(pd.DataFrame(df_estado_ano.loc[(ano)]['size']), df_censo,how='inner', on="estado")
+        df_sui_pop['taxa']= (df_sui_pop['size']/df_sui_pop['censo2010'])*100000
+        mapa = px.choropleth_mapbox(df_sui_pop, geojson=geojson, locations='estado', color='taxa',
+                           color_continuous_scale="reds",
+                           mapbox_style="white-bg",
+                           zoom=3.3, center =  {"lat":-15 ,"lon":  -51},
+                           opacity=0.9,
+                           height=900, width=800)
+
+        mapa.update_geos(fitbounds="locations", visible=False)
+        mapa.update_layout(title={
+               'text': "<b>Taxa de Suicídio por 100 mil habitantes dos estados</b><br><sup>Período de {ano}</sup>".format(ano=ano),
+               'xanchor': 'left',
+               'yanchor': 'top'},
+               title_font_family="monospace",
+               title_font_size=21)
+
+        return st.plotly_chart(mapa)
 #===================================  racacor ====================================
     def Raçacor():
         racacor = px.bar(df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False), y="size", x=df_raca_ano.loc[(ano)].sort_values(by='size', ascending=False).index,
