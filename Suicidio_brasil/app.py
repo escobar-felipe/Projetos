@@ -8,14 +8,13 @@ from pywaffle import Waffle
 import json
 
 
-# st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
 
 
 st.markdown("""
 <style>
 .big-font {
-    font-size:20px !important;
+    font-size:20px;
 }
 
 </style>
