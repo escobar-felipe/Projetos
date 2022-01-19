@@ -7,6 +7,7 @@ import matplotlib.dates
 from pywaffle import Waffle
 import json
 
+
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
 
@@ -132,7 +133,7 @@ def load():
 geojson , df ,df_censo,df_pop = load()
 
 @st.experimental_memo
-def load_csv():
+def data_preparation():
 
 
     df.drop('Unnamed: 0', axis=1, inplace=True) #retirando coluna unnmamed
@@ -207,7 +208,7 @@ def load_csv():
     #=========================== RETURN ====================================
     return df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano,df_idade,df_lococor, df_esc_ano, df2
 
-df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano, df_idade, df_lococor, df_esc_ano, df2= load_csv()
+df_data, df_pop_brasil, df_estado_ano, k_df, df_raca_ano, df_estciv_ano, df_idade_gp_ano, df_idade, df_lococor, df_esc_ano, df2= data_preparation()
 #=============sidebar / menu ================#
 
 st.sidebar.title('Navegação')
