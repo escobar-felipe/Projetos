@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import matplotlib.dates
 from pywaffle import Waffle
 import json
-from PIL import Image
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
