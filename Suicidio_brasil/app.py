@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import matplotlib.dates
 from pywaffle import Waffle
 import json
-from wordcloud import WordCloud, STOPWORDS
 from PIL import Image
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
