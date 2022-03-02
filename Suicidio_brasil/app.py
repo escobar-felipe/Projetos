@@ -12,7 +12,6 @@ st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.markdown("""
-<style>
 .big-font {
     font-size:20px;
 }
@@ -424,7 +423,7 @@ def dashboard():
     st.subheader("Selecione o gráfico:")
     option = st.selectbox(
      '',
-     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocerram os suicídios','Suicídio por nível de escolaridade',"Ocupação das vítimas"))
+     ('Porcentagem de vítimas Masculinas e Femininas', 'Taxa de Suicídio por 100 mil habitantes dos estados', 'Número de suicídio por RAÇA / COR','Número de suicídio por estado civil','Suicídio no Brasil por faixa etária','Locais onde ocorreram os suicídios','Suicídio por nível de escolaridade',"Ocupação das vítimas"))
 
     #====================================== bonecos =============================================#
     def vitimas():
@@ -574,7 +573,7 @@ def dashboard():
         local_o.update_layout(yaxis_title='Número de Suicídios',
                   xaxis_title='Local da ocorrência',
                   title={
-                  'text': "<b>Locais onde ocerram os suicídios no período {ano} </b><br>".format(ano=ano),
+                  'text': "<b>Locais onde ocorreram os suicídios no período {ano} </b><br>".format(ano=ano),
                   'xanchor': 'auto',
                   'yanchor': 'top'},
                   title_font_family="monospace",
