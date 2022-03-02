@@ -9,7 +9,7 @@ import json
 
 
 st.set_page_config( page_title="Suicídio Brasil", page_icon="chart_with_upwards_trend", layout="centered", initial_sidebar_state="expanded")
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.markdown("""
 <style>
